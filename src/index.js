@@ -25,6 +25,7 @@ function onBoxSearch() {
             if (data.length > 10) {
                 Notiflix.Notify.info('Too many matches found. Please enter a more specific name.');
                 countryList.innerHTML = '';
+                countryInfo.innerHTML = '';
             }else if (data.length === 1) {
                 countryInfo.innerHTML = createCountryCard(data);
                 countryList.innerHTML = '';
@@ -32,7 +33,11 @@ function onBoxSearch() {
                 countryInfo.innerHTML = '';
             }
         })
-        .catch(err => Notiflix.Notify.failure('Oops, there is no country with that name'));
+        .catch(err => {
+            Notiflix.Notify.failure('Oops, there is no country with that name');
+            countryList.innerHTML = '';
+            countryInfo.innerHTML = '';
+        });
 }
 
 
@@ -46,14 +51,14 @@ function renderCountryList(arr) {
 
 
 function createCountryCard(arr) {
-    return arr.map(({ name, capital, population, flags: { svg }, languages: { nativeName } }) => `
+    return arr.map(({ name, capital, population, flags: { svg }, languages }) => `
      <div class="country-header">
       <img src="${svg}" alt="${name} flag">
       <h2>${name}</h2>
      </div>
       <p><b>Capital:</b> ${capital}</p>
       <p><b>Population:</b> ${population}</p>
-      <p><b>Languages:</b> ${nativeName}</p>
+      <p><b>Languages:</b> ${ languages.map(lang => lang.name).join(', ') }</p>
   `).join("");
 }
 
